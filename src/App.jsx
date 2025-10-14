@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import React from 'react'
 import { createBrowserRouter } from 'react-router'
 import Login from './components/Login'
@@ -11,7 +10,7 @@ const approuter = createBrowserRouter([
     element:<Login />
   },
   {
-    path:"/browser",
+    path:"/browse",
     element: <Browser />
   }
 ])

@@ -1,10 +1,14 @@
 import React, { useState } from "react";
 import Header from "./Header";
 import { auth } from "../utils/firebase";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { useDispatch } from "react-redux";
+import { addUser } from "../utils/userSlice";
+import { useNavigate } from "react-router";
 
 const Login = () => {
   const [isSignUpForm, setIsSignupForm] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("")
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -12,7 +16,8 @@ const Login = () => {
   });
 
   const [errors, setErrors] = useState({});
-
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
   // Handle input change
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -56,12 +61,31 @@ const Login = () => {
           // Signed up 
           const user = userCredential.user;
           console.log("user",user)
+          setErrorMsg("")
+          updateProfile(auth.currentUser, {
+            displayName: formData.fullName
+          }).then(() => {
+            // Profile updated!
+            // ...
+            console.log("auth.currentUser",auth.currentUser)
+            dispatch(addUser({
+              uid: auth.currentUser.uid,
+              email: auth.currentUser.email,
+              displayName: auth.currentUser.displayName
+            }))
+          }).catch((error) => {
+            // An error occurred
+            // ...
+            setErrorMsg(error.message)
+
+          });
           // ...
         })
         .catch((error) => {
           const errorCode = error.code;
           const errorMessage = error.message;
-          console.log("errorCode",errorCode)
+          console.log("errorMessage",errorMessage)
+          setErrorMsg(errorMessage)
           // ..
         });
       }else{
@@ -70,12 +94,18 @@ const Login = () => {
             // Signed in 
             const user = userCredential.user;
             console.log("userSIgn", user)
+            dispatch(addUser({
+              uid: auth.currentUser.uid,
+              email: auth.currentUser.email,
+              displayName: auth.currentUser.displayName
+            }))
             // ...
           })
           .catch((error) => {
             const errorCode = error.code;
             const errorMessage = error.message;
-            console.log("error2",errorMessage)
+            console.log("error2",error)
+             setErrorMsg(errorMessage)
           });
       }
     }
@@ -144,7 +174,7 @@ const Login = () => {
               <p className="text-red-400 text-sm">{errors.password}</p>
             )}
           </div>
-
+           {errorMsg && <p className="text-red-400 text-sm">{errorMsg}</p>}
           {/* Submit Button */}
           <button
             type="submit"
