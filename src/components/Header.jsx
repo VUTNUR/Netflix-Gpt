@@ -55,7 +55,7 @@ const Header = () => {
     });
   }
   return (
-    <div className="h-[10%] px-24 py-2 bg-black/10 flex justify-between items-center relative">
+    <div className={`h-[10%] px-24 ${isUser ? "bg-black py-1" : "bg-black/10 py-2"} flex justify-between items-center relative`}>
       {/* Logo */}
       <img src={logo} alt="logo" width="180" className="drop-shadow-lg" />
 
@@ -79,7 +79,7 @@ const Header = () => {
 
         {/* Dropdown Menu */}
         {showDropDown && (
-          <div ref={dropdownRef} className="absolute top-14 right-0 bg-black text-white rounded-md shadow-lg w-40 py-3">
+          <div ref={dropdownRef} className="absolute top-14 right-0 bg-black text-white rounded-md shadow-lg w-40 py-3 z-20">
             <p className="px-4 py-2 hover:bg-gray-800 cursor-default">
               {isUser?.displayName}
             </p>
