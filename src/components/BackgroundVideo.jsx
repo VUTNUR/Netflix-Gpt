@@ -6,7 +6,7 @@ const BackgroundVideo = ({trailerMovie}) => {
 const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=0&loop=1&playlist=${videoId}&modestbranding=1&rel=0&showinfo=0&disablekb=1`;
   console.log("embedUrl",embedUrl)
   return (
-    <div className="w-full h-[60vh] md:h-[80vh] overflow-hidden">
+    <div className="w-full h-[60vh] md:h-[90vh] overflow-hidden">
       <iframe
         className="w-full h-full aspect-video object-cover"
         src={embedUrl}

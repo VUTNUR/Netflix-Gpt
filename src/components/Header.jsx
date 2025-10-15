@@ -55,7 +55,7 @@ const Header = () => {
     });
   }
   return (
-    <div className={`h-[10%] px-24 ${isUser ? "bg-black py-1" : "bg-black/10 py-2"} flex justify-between items-center relative`}>
+    <div className={`h-[10%] px-10 ${isUser ? "bg-black py-1" : "bg-black/10 py-2"} flex justify-between items-center relative`}>
       {/* Logo */}
       <img src={logo} alt="logo" width="180" className="drop-shadow-lg" />
 

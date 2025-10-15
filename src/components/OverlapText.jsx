@@ -4,7 +4,7 @@ import { MdInfoOutline } from "react-icons/md";
 
 const OverlapText = ({trailerMovie}) => {
   return (
-    <div className='flex flex-col items-start w-[40%] gap-3 bg-gradient-to-r from-black/40 absolute bottom-20 left-10'>
+    <div className='flex flex-col items-start w-[40%] gap-3 bg-gradient-to-r from-black/40 absolute bottom-40 left-10'>
         <h6 className='m-0 text-white font-bold text-2xl'>{trailerMovie?.originalTitle}</h6>
         <p className='m-0 text-white'>{trailerMovie?.description}</p>
         <div className='flex items-center gap-2'>
