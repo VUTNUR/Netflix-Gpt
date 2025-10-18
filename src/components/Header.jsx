@@ -7,6 +7,8 @@ import { addUser, removeUser } from "../utils/userSlice";
 import { useNavigate } from "react-router";
 import { onAuthStateChanged , signOut} from "firebase/auth";
 import { auth } from "../utils/firebase";
+import { selectLanguage, toggleSearch } from "../utils/profileConfigSlice";
+import { multiLanguageArray } from "../utils/constant";
 
 const Header = () => {
   const [showDropDown, setShowDropDown] = useState(false);
@@ -14,6 +16,7 @@ const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const isUser = useSelector((store)=>store.user)
+  const showSearch = useSelector((store)=>store.profile.showSearch)
 
   useEffect(()=>{
     const handleClickOutside = (event)=>{
@@ -54,14 +57,29 @@ const Header = () => {
       
     });
   }
+
+  const handleToggle =()=>{
+    dispatch(toggleSearch())
+  }
   return (
-    <div className={`h-[10%] px-10 ${isUser ? "bg-black py-1" : "bg-black/10 py-2"} flex justify-between items-center relative`}>
+    <div className={`h-[10%] px-10 ${isUser ? (showSearch ? "bg-black/10 py-2" : "bg-black py-1") : "bg-black/10 py-2"}
+ flex justify-between items-center relative`}>
       {/* Logo */}
       <img src={logo} alt="logo" width="180" className="drop-shadow-lg" />
 
       {/* Profile + Dropdown */}
       {
         isUser &&
+        <div className="flex items-center gap-2">
+          {
+            showSearch &&
+            <select onChange={(e)=>dispatch(selectLanguage(e.target.value))} className="p-2 rounded-md bg-blue-700 text-white cursor-pointer">
+              {
+                multiLanguageArray.map((el)=> <option key={el.value} value={el.value}>{el.name}</option>)
+              }
+            </select>
+          }
+          <button onClick={handleToggle} className="px-4 py-2 rounded-md bg-purple-800 text-white cursor-pointer">{showSearch ? "Go To Home":"Go To Search"}</button>
       <div
         className="relative flex items-center gap-1 cursor-pointer select-none"
         onClick={() => setShowDropDown(!showDropDown)}
@@ -97,6 +115,7 @@ const Header = () => {
           </div>
         )}
       </div>
+        </div>
       }
     </div>
   );
