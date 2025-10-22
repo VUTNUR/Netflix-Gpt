@@ -1,14 +1,18 @@
 import React, { useState } from "react";
 import Header from "./Header";
 import { auth } from "../utils/firebase";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  updateProfile,
+} from "firebase/auth";
 import { useDispatch } from "react-redux";
 import { addUser } from "../utils/userSlice";
 import { useNavigate } from "react-router";
 
 const Login = () => {
   const [isSignUpForm, setIsSignupForm] = useState(false);
-  const [errorMsg, setErrorMsg] = useState("")
+  const [errorMsg, setErrorMsg] = useState("");
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -16,12 +20,13 @@ const Login = () => {
   });
 
   const [errors, setErrors] = useState({});
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   // Handle input change
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-    setErrors({ ...errors, [e.target.name]: "" }); // clear error on typing
+    setErrors({ ...errors, [e.target.name]: "" });
   };
 
   // Basic validation
@@ -55,76 +60,63 @@ const Login = () => {
     e.preventDefault();
 
     if (validate()) {
-      if(isSignUpForm){
-      createUserWithEmailAndPassword(auth, formData.email, formData.password)
-        .then((userCredential) => {
-          // Signed up 
-          const user = userCredential.user;
-          console.log("user",user)
-          setErrorMsg("")
-          updateProfile(auth.currentUser, {
-            displayName: formData.fullName
-          }).then(() => {
-            // Profile updated!
-            // ...
-            console.log("auth.currentUser",auth.currentUser)
-            dispatch(addUser({
-              uid: auth.currentUser.uid,
-              email: auth.currentUser.email,
-              displayName: auth.currentUser.displayName
-            }))
-          }).catch((error) => {
-            // An error occurred
-            // ...
-            setErrorMsg(error.message)
-
-          });
-          // ...
-        })
-        .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          console.log("errorMessage",errorMessage)
-          setErrorMsg(errorMessage)
-          // ..
-        });
-      }else{
-        signInWithEmailAndPassword(auth, formData.email, formData.password)
+      if (isSignUpForm) {
+        createUserWithEmailAndPassword(auth, formData.email, formData.password)
           .then((userCredential) => {
-            // Signed in 
             const user = userCredential.user;
-            console.log("userSIgn", user)
-            dispatch(addUser({
-              uid: auth.currentUser.uid,
-              email: auth.currentUser.email,
-              displayName: auth.currentUser.displayName
-            }))
-            // ...
+            setErrorMsg("");
+            updateProfile(auth.currentUser, {
+              displayName: formData.fullName,
+            })
+              .then(() => {
+                dispatch(
+                  addUser({
+                    uid: auth.currentUser.uid,
+                    email: auth.currentUser.email,
+                    displayName: auth.currentUser.displayName,
+                  })
+                );
+              })
+              .catch((error) => {
+                setErrorMsg(error.message);
+              });
           })
           .catch((error) => {
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            console.log("error2",error)
-             setErrorMsg(errorMessage)
+            setErrorMsg(error.message);
+          });
+      } else {
+        signInWithEmailAndPassword(auth, formData.email, formData.password)
+          .then((userCredential) => {
+            const user = userCredential.user;
+            dispatch(
+              addUser({
+                uid: auth.currentUser.uid,
+                email: auth.currentUser.email,
+                displayName: auth.currentUser.displayName,
+              })
+            );
+          })
+          .catch((error) => {
+            setErrorMsg(error.message);
           });
       }
     }
   };
 
   return (
-    <div className="relative h-screen bg-[url('/src/assets/netflix-bg.jpg')] bg-cover bg-center">
+    <div className="relative min-h-screen bg-[url('/src/assets/netflix-bg.jpg')] bg-cover bg-center">
       {/* Overlay */}
       <div className="absolute inset-0 bg-black/60"></div>
 
       <Header />
 
       {/* Center content */}
-      <div className="flex justify-center items-center w-full h-[90%] relative z-10">
+      <div className="flex justify-center items-center w-full min-h-[90vh] relative z-10 px-4">
         <form
           onSubmit={handleSubmit}
-          className="bg-black/70 rounded-xl w-4/12 p-12 flex flex-col gap-5"
+          className="bg-black/70 rounded-xl w-full max-w-md sm:max-w-lg md:max-w-md lg:w-4/12 p-6 sm:p-8 md:p-10 flex flex-col gap-5"
         >
-          <h3 className="text-white font-bold text-2xl m-0">
+          <h3 className="text-white font-bold text-2xl sm:text-3xl mb-2 text-center">
             {isSignUpForm ? "Sign Up" : "Sign In"}
           </h3>
 
@@ -137,7 +129,7 @@ const Login = () => {
                 placeholder="Enter Full Name"
                 value={formData.fullName}
                 onChange={handleChange}
-                className="p-2 focus:outline-none border border-white rounded-md placeholder:text-white text-white bg-transparent"
+                className="p-2 sm:p-3 focus:outline-none border border-white rounded-md placeholder:text-white text-white bg-transparent"
               />
               {errors.fullName && (
                 <p className="text-red-400 text-sm">{errors.fullName}</p>
@@ -153,7 +145,7 @@ const Login = () => {
               placeholder="Enter email"
               value={formData.email}
               onChange={handleChange}
-              className="p-2 focus:outline-none border border-white rounded-md placeholder:text-white text-white bg-transparent"
+              className="p-2 sm:p-3 focus:outline-none border border-white rounded-md placeholder:text-white text-white bg-transparent"
             />
             {errors.email && (
               <p className="text-red-400 text-sm">{errors.email}</p>
@@ -168,24 +160,26 @@ const Login = () => {
               placeholder="Enter password"
               value={formData.password}
               onChange={handleChange}
-              className="p-2 focus:outline-none border border-white rounded-md placeholder:text-white text-white bg-transparent"
+              className="p-2 sm:p-3 focus:outline-none border border-white rounded-md placeholder:text-white text-white bg-transparent"
             />
             {errors.password && (
               <p className="text-red-400 text-sm">{errors.password}</p>
             )}
           </div>
-           {errorMsg && <p className="text-red-400 text-sm">{errorMsg}</p>}
+
+          {errorMsg && <p className="text-red-400 text-sm">{errorMsg}</p>}
+
           {/* Submit Button */}
           <button
             type="submit"
-            className="bg-red-600 text-white p-2 rounded-md hover:bg-red-700 transition cursor-pointer"
+            className="bg-red-600 text-white p-2 sm:p-3 rounded-md hover:bg-red-700 transition cursor-pointer"
           >
             {isSignUpForm ? "Sign Up" : "Sign In"}
           </button>
 
           {/* Toggle Between Sign In / Sign Up */}
           {isSignUpForm ? (
-            <p className="m-0 text-[1rem] text-white text-center">
+            <p className="m-0 text-sm sm:text-base text-white text-center">
               Already a customer?{" "}
               <span
                 onClick={() => {
@@ -193,13 +187,13 @@ const Login = () => {
                   setFormData({ fullName: "", email: "", password: "" });
                   setErrors({});
                 }}
-                className="cursor-pointer font-[600] text-[1.1rem]"
+                className="cursor-pointer font-semibold hover:underline"
               >
                 Login now.
               </span>
             </p>
           ) : (
-            <p className="m-0 text-[1rem] text-white text-center">
+            <p className="m-0 text-sm sm:text-base text-white text-center">
               New to Netflix?{" "}
               <span
                 onClick={() => {
@@ -207,7 +201,7 @@ const Login = () => {
                   setFormData({ fullName: "", email: "", password: "" });
                   setErrors({});
                 }}
-                className="cursor-pointer font-[600] text-[1.1rem]"
+                className="cursor-pointer font-semibold hover:underline"
               >
                 Sign up now.
               </span>
