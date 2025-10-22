@@ -93,6 +93,7 @@ const Header = () => {
 
           {/* Profile + Dropdown */}
           <div
+            ref={dropdownRef}
             className="relative flex items-center gap-1 cursor-pointer select-none"
             onClick={() => setShowDropDown(!showDropDown)}
           >
@@ -110,7 +111,6 @@ const Header = () => {
             {/* Dropdown Menu */}
             {showDropDown && (
               <div
-                ref={dropdownRef}
                 className="absolute top-12 sm:top-14 right-0 bg-black text-white rounded-md shadow-lg w-36 sm:w-40 py-3 z-20"
               >
                 <p className="px-4 py-2 hover:bg-gray-800 cursor-default text-sm sm:text-base truncate">
