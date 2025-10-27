@@ -1,5 +1,6 @@
 {
   "name": "netflixgpt",
+  "homepage": "https://vutnur.github.io/Netflix-Gpt/",
   "private": true,
   "version": "0.0.0",
   "type": "module",
